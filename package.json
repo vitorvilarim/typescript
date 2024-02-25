@@ -12,7 +12,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "prettier --write . && git add -A .",
-      "commit-msg": "yarn commitlint --edit $1"
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "license": "MIT",
@@ -22,6 +22,7 @@
     "husky": "^9.0.11",
     "knex": "^3.1.0",
     "mysql2": "^3.9.1",
+    "pg": "^8.11.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },

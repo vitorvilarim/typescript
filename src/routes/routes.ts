@@ -5,9 +5,10 @@ import {
     detalharCarros,
     excluirCarros,
     listarCarros
-} from './controladores/carros'
+} from '../controllers/controller'
 
 const rotas = Router()
+
 
 
 rotas.get('/carros', listarCarros)

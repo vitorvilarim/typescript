@@ -1,15 +1,12 @@
-import 'reflect-metadata';
+import 'dotenv/config'
 import express from "express";
-import { Request, Response } from "express";
+import rotas from './routes/routes';
 
 
 const app = express();
 
 app.use(express.json());
-
-app.get("/", (req: Request, res: Response) => {
-    return res.status(200).json("Olá Mundo! Essa é a minha primeira rota :)");
-});
+app.use(rotas)
 
 const PORT = 3000;
 

@@ -1,7 +1,7 @@
 import conexao from 'knex'
 
 export const knex = conexao({
-    client: 'mysql2',
+    client: 'pg',
     connection: {
         host: process.env.DB_HOST,
         port: Number(process.env.DB_PORT),
