@@ -2,100 +2,28 @@ import { Request, Response } from 'express'
 import { knex } from '../config/connection'
 import { Carro } from '../types'
 import cron from 'node-cron';
+import fs from 'node:fs'
 
 export const listarCarros = async (_: Request, res: Response) => {
     try {
         // const carros = await knex<Carro>('carros')
-        const job = cron.schedule("* * * * *", () => {
-            console.log("tudo certo");
-        })
+
+        const script = "* * * * *"
+        const job = cron.schedule(script, () => {
+            const logMessage = `Cron job executado em ${new Date().toLocaleString()}\n`;
+            console.log(logMessage);
+            fs.appendFile('cron.log', logMessage, function (err) {
+                if (err) {
+                    console.error('Erro ao gravar no arquivo de log:', err);
+                }
+            })
+        });
 
         job.start()
 
-        return res.json("ok")
+        return res.json("ok");
     } catch (e) {
         console.log(e);
-
-        return res.status(500).json({ mensagem: 'Erro interno do servidor.' })
-    }
-}
-
-export const detalharCarros = async (req: Request, res: Response) => {
-    const { id } = req.params
-    try {
-        const carro = await knex<Carro>('carros')
-            .where({ id: Number(id) })
-            .first()
-
-        if (!carro) {
-            return res.status(404).json({ mensagem: 'Carro não encontrado.' })
-        }
-
-        return res.json(carro)
-    } catch {
-        return res.status(500).json({ mensagem: 'Erro interno do servidor.' })
-    }
-}
-
-export const cadastrarCarros = async (req: Request, res: Response) => {
-    const { marca, modelo, cor, ano, valor } = req.body
-
-    try {
-        const carro = await knex<Omit<Carro, 'id'>>('carros').insert({
-            marca,
-            modelo,
-            cor,
-            ano,
-            valor
-        }).returning('*')
-
-        return res.status(201).json(carro[0])
-    } catch {
-        return res.status(500).json({ mensagem: 'Erro interno do servidor.' })
-    }
-}
-
-export const atualizarCarros = async (req: Request, res: Response) => {
-    const { id } = req.params
-    const { marca, modelo, cor, ano, valor } = req.body
-
-    try {
-        const carro = await knex<Carro>('carros')
-            .where({ id: Number(id) })
-            .first()
-
-        if (!carro) {
-            return res.status(404).json({ mensagem: 'Carro não encontrado.' })
-        }
-
-        await knex<Carro>('carros')
-            .where({ id: Number(id) })
-            .update({ marca, modelo, cor, ano, valor })
-
-        return res.status(204).send()
-    } catch {
-        return res.status(500).json({ mensagem: 'Erro interno do servidor.' })
-    }
-}
-
-export const excluirCarros = async (req: Request, res: Response) => {
-    const { id } = req.params
-
-    try {
-        const carro = await knex<Carro>('carros')
-            .where({ id: Number(id) })
-            .first()
-
-        if (!carro) {
-            return res.status(404).json({ mensagem: 'Carro não encontrado.' })
-        }
-
-        await knex<Carro>('carros')
-            .where({ id: Number(id) })
-            .del()
-
-        return res.status(204).send()
-    } catch {
         return res.status(500).json({ mensagem: 'Erro interno do servidor.' })
     }
 }
