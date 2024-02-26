@@ -1,11 +1,18 @@
 import { Request, Response } from 'express'
 import { knex } from '../config/connection'
 import { Carro } from '../types'
+import cron from 'node-cron';
 
 export const listarCarros = async (_: Request, res: Response) => {
     try {
-        const carros = await knex<Carro>('carros')
-        return res.json(carros)
+        // const carros = await knex<Carro>('carros')
+        const job = cron.schedule("* * * * *", () => {
+            console.log("tudo certo");
+        })
+
+        job.start()
+
+        return res.json("ok")
     } catch (e) {
         console.log(e);
 
